@@ -44,7 +44,7 @@
  **************************************************************************************/
 
 #include "coder.h"
-//#include "assembly.h"
+#include "assembly.h"
 
 static const int nmdctTab[NUM_IMDCT_SIZES] = {128, 1024};
 static const int postSkip[NUM_IMDCT_SIZES] = {15, 1};

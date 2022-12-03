@@ -72,7 +72,7 @@
 #error No platform defined. See valid options in aacdec.h
 #endif
 
-#define USE_DEFAULT_STDLIB
+//#define USE_DEFAULT_STDLIB
 
 #ifdef __cplusplus
 extern "C" {

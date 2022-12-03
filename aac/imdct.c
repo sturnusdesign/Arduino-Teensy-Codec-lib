@@ -44,7 +44,7 @@
  **************************************************************************************/
 
 #include "coder.h"
-//#include "assembly.h"
+#include "assembly.h"
 
 #define RND_VAL		(1 << (FBITS_OUT_IMDCT-1))
 

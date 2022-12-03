@@ -44,7 +44,7 @@
  **************************************************************************************/
 
 #include "coder.h"
-//#include "assembly.h"
+#include "assembly.h"
 
 #define FBITS_LPC_COEFS	20
 

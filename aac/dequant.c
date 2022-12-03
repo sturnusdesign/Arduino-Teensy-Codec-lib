@@ -44,7 +44,7 @@
  **************************************************************************************/
 
 #include "coder.h"
-//#include "assembly.h"
+#include "assembly.h"
 
 #define	SF_OFFSET			100
 
