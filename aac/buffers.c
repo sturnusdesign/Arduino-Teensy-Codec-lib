@@ -50,6 +50,7 @@
 #endif
 
 #include "coder.h"
+#include "mighty_memory.h"
 
 /**************************************************************************************
  * Function:    ClearBuffer
@@ -98,12 +99,12 @@ AACDecInfo *AllocateBuffers(void)
 {
 	AACDecInfo *aacDecInfo;
 
-	aacDecInfo = (AACDecInfo *)malloc(sizeof(AACDecInfo));
+	aacDecInfo = (AACDecInfo *)mighty_malloc(sizeof(AACDecInfo));
 	if (!aacDecInfo)
 		return 0;
 	ClearBuffer(aacDecInfo, sizeof(AACDecInfo));
 
-	aacDecInfo->psInfoBase = malloc(sizeof(PSInfoBase));
+	aacDecInfo->psInfoBase = mighty_malloc(sizeof(PSInfoBase));
 	if (!aacDecInfo->psInfoBase) {
 		FreeBuffers(aacDecInfo);
 		return 0;
@@ -114,7 +115,7 @@ AACDecInfo *AllocateBuffers(void)
 }
 
 #ifndef SAFE_FREE
-#define SAFE_FREE(x)	{if (x)	free(x);	(x) = 0;}	/* helper macro */
+#define SAFE_FREE(x)	{if (x)	mighty_free(x);	(x) = 0;}	/* helper macro */
 #endif
 
 /**************************************************************************************
