@@ -367,12 +367,15 @@ static inline short CLIPTOSHORT(int x)
 clip to [-2^n, 2^n-1], valid range of n = [1, 30]
 //TODO (FB) Is there a better way ?
 */
+//TODO: DS figure out which of the 2 functions to use?
+#ifndef CLIP_2N
 #define CLIP_2N(y, n) { \
 	int sign = (y) >> 31;  \
 	if (sign != (y) >> (n))  { \
 		(y) = sign ^ ((1 << (n)) - 1); \
 	} \
 }
+#endif
 
 /* From coder.h, ORIGINAL:
  do y <<= n, clipping to range [-2^30, 2^30 - 1] (i.e. output has one guard bit) 
@@ -387,7 +390,8 @@ clip to [-2^n, 2^n-1], valid range of n = [1, 30]
         }                                       \
     }
 
-
+#include <stdlib.h>
+#include <math.h>
 
 #define FASTABS(x) abs(x) //FB
 #define CLZ(x) __builtin_clz(x) //FB
