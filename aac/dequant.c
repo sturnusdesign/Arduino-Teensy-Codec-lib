@@ -43,6 +43,9 @@
  * dequant.c - transform coefficient dequantization and short-block deinterleaving
  **************************************************************************************/
 
+// Since this is 3rd party code, ignore warnings in this file
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+
 #include "coder.h"
 #include "assembly.h"
 

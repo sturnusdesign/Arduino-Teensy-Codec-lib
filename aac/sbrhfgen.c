@@ -43,6 +43,9 @@
  * sbrhfgen.c - high frequency generation for SBR
  **************************************************************************************/
 
+// Since this is 3rd party code, ignore warnings in this file
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+
 #include "sbr.h"
 #include "assembly.h"
 
