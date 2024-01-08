@@ -50,6 +50,7 @@
 #endif
 
 #include "sbr.h"
+#include "mighty_memory.h"
 
 /**************************************************************************************
  * Function:    InitSBRState
@@ -103,7 +104,7 @@ int InitSBR(AACDecInfo *aacDecInfo)
 		return ERR_AAC_NULL_POINTER;
 
 	/* allocate SBR state structure */
-	psi = (PSInfoSBR *)malloc(sizeof(PSInfoSBR));
+	psi = (PSInfoSBR *)mighty_malloc(sizeof(PSInfoSBR));
 	if (!psi)
 		return ERR_AAC_SBR_INIT;
 
@@ -129,7 +130,7 @@ int InitSBR(AACDecInfo *aacDecInfo)
 void FreeSBR(AACDecInfo *aacDecInfo)
 {
 	if (aacDecInfo && aacDecInfo->psInfoSBR)
-		free(aacDecInfo->psInfoSBR);
+		mighty_free(aacDecInfo->psInfoSBR);
 
 	return;
 }
