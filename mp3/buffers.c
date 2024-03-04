@@ -50,6 +50,8 @@
 #include <string.h>
 #include "coder.h"
 
+#include "mighty_memory.h"
+
 /**************************************************************************************
  * Function:    ClearBuffer
  *
@@ -107,18 +109,18 @@ MP3DecInfo *AllocateBuffers(void)
 	IMDCTInfo *mi;
 	SubbandInfo *sbi;
 
-	mp3DecInfo = (MP3DecInfo *)malloc(sizeof(MP3DecInfo));
+	mp3DecInfo = (MP3DecInfo *)mighty_malloc(sizeof(MP3DecInfo));
 	if (!mp3DecInfo)
 		return 0;
 	ClearBuffer(mp3DecInfo, sizeof(MP3DecInfo));
 	
-	fh =  (FrameHeader *)     malloc(sizeof(FrameHeader));
-	si =  (SideInfo *)        malloc(sizeof(SideInfo));
-	sfi = (ScaleFactorInfo *) malloc(sizeof(ScaleFactorInfo));
-	hi =  (HuffmanInfo *)     malloc(sizeof(HuffmanInfo));
-	di =  (DequantInfo *)     malloc(sizeof(DequantInfo));
-	mi =  (IMDCTInfo *)       malloc(sizeof(IMDCTInfo));
-	sbi = (SubbandInfo *)     malloc(sizeof(SubbandInfo));
+	fh =  (FrameHeader *)     mighty_malloc(sizeof(FrameHeader));
+	si =  (SideInfo *)        mighty_malloc(sizeof(SideInfo));
+	sfi = (ScaleFactorInfo *) mighty_malloc(sizeof(ScaleFactorInfo));
+	hi =  (HuffmanInfo *)     mighty_malloc(sizeof(HuffmanInfo));
+	di =  (DequantInfo *)     mighty_malloc(sizeof(DequantInfo));
+	mi =  (IMDCTInfo *)       mighty_malloc(sizeof(IMDCTInfo));
+	sbi = (SubbandInfo *)     mighty_malloc(sizeof(SubbandInfo));
 
 	mp3DecInfo->FrameHeaderPS =     (void *)fh;
 	mp3DecInfo->SideInfoPS =        (void *)si;
@@ -145,7 +147,7 @@ MP3DecInfo *AllocateBuffers(void)
 	return mp3DecInfo;
 }
 
-#define SAFE_FREE(x)	{if (x)	free(x);	(x) = 0;}	/* helper macro */
+#define SAFE_FREE(x)	{if (x)	mighty_free(x);	(x) = 0;}	/* helper macro */
 
 /**************************************************************************************
  * Function:    FreeBuffers
