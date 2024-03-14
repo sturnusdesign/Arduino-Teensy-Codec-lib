@@ -46,7 +46,7 @@
  **************************************************************************************/
 
 #include "coder.h"
-//#include "assembly.h"
+#include "assembly.h"
 
 /* input to Polyphase = Q(DQ_FRACBITS_OUT-2), gain 2 bits in convolution
  *  we also have the implicit bias of 2^15 to add back, so net fraction bits = 
@@ -123,8 +123,21 @@ void PolyphaseMono(short *pcm, int *vbuf, const int *coefBase)
 	coef = coefBase;
 	vb1 = vbuf;
 	sum1L = rndVal;
+#ifdef ADAFRUIT_VERSION	
+	c1 = *coef;
+	coef++;
+	c2 = *coef;
+	coef++;
+	vLo = *(vb1+(0));
+	vHi = *(vb1+(23-(0)));
+	sum1L = MADD64(sum1L, vLo,  c1);
+	sum1L = MADD64(sum1L, vHi, -c2);
+	
+	//MC0M(0) // a
+#else
 
 	MC0M(0)
+#endif    
 	MC0M(1)
 	MC0M(2)
 	MC0M(3)

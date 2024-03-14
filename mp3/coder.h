@@ -49,6 +49,10 @@
 
 #include "mp3common.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #if defined(ASSERT)
 #undef ASSERT
 #endif
@@ -309,4 +313,7 @@ extern const int csa[8][2];
 extern const int coef32[31];
 extern const int polyCoef[264];
 
+#ifdef __cplusplus
+}
+#endif
 #endif	/* _CODER_H */

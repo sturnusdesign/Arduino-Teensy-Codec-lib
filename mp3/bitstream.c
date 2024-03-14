@@ -41,8 +41,13 @@
  * bitstream.c - bitstream unpacking, frame header parsing, side info parsing
  **************************************************************************************/
 
+#define CURRENT_LOG_MODULE LOG_MODULE_MP3
+#include "mighty_log.h"
+#undef BLOCK_SIZE
+
 #include "coder.h"
-////#include "assembly.h"
+#include "assembly.h"
+
 
 /**************************************************************************************
  * Function:    SetBitstreamPointer
@@ -86,34 +91,17 @@ void SetBitstreamPointer(BitStreamInfo *bsi, int nBytes, unsigned char *buf)
  **************************************************************************************/
 static __inline void RefillBitstreamCache(BitStreamInfo *bsi)
 {
-	int nBytes = bsi->nBytes;	
+	int nBytes = bsi->nBytes;
+
+	/* optimize for common case, independent of machine endian-ness */
 	if (nBytes >= 4) {
-		/* optimize for common case, independent of machine endian-ness */
-		/*
 		bsi->iCache  = (*bsi->bytePtr++) << 24;
 		bsi->iCache |= (*bsi->bytePtr++) << 16;
 		bsi->iCache |= (*bsi->bytePtr++) <<  8;
 		bsi->iCache |= (*bsi->bytePtr++);
-		*/
-	
-		/* Optimize for ARM instead (FB)*/
-		unsigned int *Ptr32;
-		Ptr32 =(unsigned int*)bsi->bytePtr;
-		bsi->iCache = REV32(*Ptr32);
-		bsi->bytePtr+=4;
-	
-	
 		bsi->cachedBits = 32;
 		bsi->nBytes -= 4;
-	} else if (nBytes == 2) { //FB	
-		unsigned short *Ptr16;
-		Ptr16 =(unsigned short*)bsi->bytePtr;
-		bsi->iCache = REV16(*Ptr16);
-		bsi->bytePtr +=2;	
-		bsi->cachedBits = 16;
-		bsi->nBytes -= 2;
-			
-	} /*else { //FB
+	} else {
 		bsi->iCache = 0;
 		while (nBytes--) {
 			bsi->iCache |= (*bsi->bytePtr++);
@@ -121,11 +109,6 @@ static __inline void RefillBitstreamCache(BitStreamInfo *bsi)
 		}
 		bsi->iCache <<= ((3 - bsi->nBytes)*8);
 		bsi->cachedBits = 8*bsi->nBytes;
-		bsi->nBytes = 0;
-	} */
-	else { //FB		
-		bsi->iCache = (*bsi->bytePtr++) << 24;		
-		bsi->cachedBits = 8;
 		bsi->nBytes = 0;
 	}
 }
@@ -244,6 +227,7 @@ int UnpackFrameHeader(MP3DecInfo *mp3DecInfo, unsigned char *buf)
 	FrameHeader *fh;
 
 	/* validate pointers and sync word */
+    //m_log("buf[0]:%x, buf[1]:%x\n", buf[0], buf[1]);
 	if (!mp3DecInfo || !mp3DecInfo->FrameHeaderPS || (buf[0] & SYNCWORDH) != SYNCWORDH || (buf[1] & SYNCWORDL) != SYNCWORDL)
 		return -1;
 
@@ -252,13 +236,16 @@ int UnpackFrameHeader(MP3DecInfo *mp3DecInfo, unsigned char *buf)
 	/* read header fields - use bitmasks instead of GetBits() for speed, since format never varies */
 	verIdx =         (buf[1] >> 3) & 0x03;
 	fh->ver =        (MPEGVersion)( verIdx == 0 ? MPEG25 : ((verIdx & 0x01) ? MPEG1 : MPEG2) );
+    //m_log("ver: %x\n", fh->ver);
 	fh->layer = 4 - ((buf[1] >> 1) & 0x03);     /* easy mapping of index to layer number, 4 = error */
+    //m_log("layer: %x\n", fh->layer);
 	fh->crc =   1 - ((buf[1] >> 0) & 0x01);
 	fh->brIdx =      (buf[2] >> 4) & 0x0f;
 	fh->srIdx =      (buf[2] >> 2) & 0x03;
 	fh->paddingBit = (buf[2] >> 1) & 0x01;
 	fh->privateBit = (buf[2] >> 0) & 0x01;
 	fh->sMode =      (StereoMode)((buf[3] >> 6) & 0x03);      /* maps to correct enum (see definition) */    
+    //m_log("sMode: %x\n", fh->sMode);
 	fh->modeExt =    (buf[3] >> 4) & 0x03;
 	fh->copyFlag =   (buf[3] >> 3) & 0x01;
 	fh->origFlag =   (buf[3] >> 2) & 0x01;
@@ -293,7 +280,7 @@ int UnpackFrameHeader(MP3DecInfo *mp3DecInfo, unsigned char *buf)
 			(int)sideBytesTab[fh->ver][(fh->sMode == Mono ? 0 : 1)] - 
 			4 - (fh->crc ? 2 : 0) + (fh->paddingBit ? 1 : 0);
 	}
-
+    //m_log("bitrate: %d\n", mp3DecInfo->bitrate);
 	/* load crc word, if enabled, and return length of frame header (in bytes) */
 	if (fh->crc) {
 		fh->CRCWord = ((int)buf[4] << 8 | (int)buf[5] << 0);

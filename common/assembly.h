@@ -430,6 +430,10 @@ static inline Word64 MADD64(Word64 sum64, int x, int y)
 	return u.w64;
 }
 
+static inline Word64 SAR64(Word64 x, int n) {
+    return x >> n;
+}
+
 /* toolchain:           x86 gcc
  * target architecture: x86
  */

@@ -42,6 +42,8 @@
  **************************************************************************************/
 
 #include "coder.h"
+#include "assembly.h"
+#include <stdio.h>
 
 /* helper macros - see comments in hufftabs.c about the format of the huffman tables */
 #define GetMaxbits(x)   ((int)( (((unsigned short)(x)) >>  0) & 0x000f))
@@ -464,8 +466,9 @@ static int DecodeHuffmanQuads(int *vwxy, int nVals, int tabIdx, int bitsLeft, un
 	hi->nonZeroBound[ch] += DecodeHuffmanQuads(hi->huffDecBuf[ch] + rEnd[3], MAX_NSAMP - rEnd[3], sis->count1TableSelect, bitsLeft, buf, *bitOffset);
 
 	ASSERT(hi->nonZeroBound[ch] <= MAX_NSAMP);
-	for (i = hi->nonZeroBound[ch]; i < MAX_NSAMP; i++)
+	for (i = hi->nonZeroBound[ch]; i < MAX_NSAMP; i++) {
 		hi->huffDecBuf[ch][i] = 0;
+	}
 	
 	/* If bits used for 576 samples < huffBlockBits, then the extras are considered
 	 *  to be stuffing bits (throw away, but need to return correct bitstream position) 

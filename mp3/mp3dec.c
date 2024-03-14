@@ -41,8 +41,7 @@
  * mp3dec.c - platform-independent top level MP3 decoder API
  **************************************************************************************/
 
-#include "string.h"
-//#include "hlxclib/string.h"		/* for memmove, memcpy (can replace with different implementations if desired) */
+#include <string.h>		/* for memmove, memcpy (can replace with different implementations if desired) */
 #include "mp3common.h"	/* includes mp3dec.h (public API) and internal, platform-independent API */
 
 
