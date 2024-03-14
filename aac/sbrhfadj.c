@@ -276,7 +276,7 @@ static void CalcMaxGain(PSInfoSBR *psi, SBRHeader *sbrHdr, SBRGrid *sbrGrid, SBR
 	psi->gainMaxFBits = 30;	/* Q30 tables */
 	if (sumECurr == 0) {
 		/* any non-zero numerator * 1/EPS_0 is > G_MAX */
-		gainMax = (sumEOrigMapped == 0 ? limGainTab[sbrHdr->limiterGains] : 0x80000000);
+		gainMax = ((sumEOrigMapped == 0) ? limGainTab[sbrHdr->limiterGains] : (int)0x80000000);
 	} else if (sumEOrigMapped == 0) {
 		/* 1/(any non-zero denominator) * EPS_0 * limGainTab[x] is appx. 0 */
 		gainMax = 0;
