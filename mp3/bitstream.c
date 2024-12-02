@@ -42,6 +42,7 @@
  **************************************************************************************/
 
 #define CURRENT_LOG_MODULE LOG_MODULE_MP3
+#undef dg_configSYSTEMVIEW  //This causes compile errors in the underlying headers here!
 #include "mighty_log.h"
 #undef BLOCK_SIZE
 
@@ -241,6 +242,7 @@ int UnpackFrameHeader(MP3DecInfo *mp3DecInfo, unsigned char *buf)
     //m_log("layer: %x\n", fh->layer);
 	fh->crc =   1 - ((buf[1] >> 0) & 0x01);
 	fh->brIdx =      (buf[2] >> 4) & 0x0f;
+    //m_log("brIdx: %x\n", fh->brIdx);
 	fh->srIdx =      (buf[2] >> 2) & 0x03;
 	fh->paddingBit = (buf[2] >> 1) & 0x01;
 	fh->privateBit = (buf[2] >> 0) & 0x01;
